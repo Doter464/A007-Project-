@@ -1,0 +1,250 @@
+/* Светлая тема + базовая темная через класс .dark на body */
+
+/* Цветовая палитра (переменные) */
+:root {
+  --bg: #f8fafc; /* фон страницы */
+  --card: #ffffff; /* карточки */
+  --card-border: #e5e7eb; /* граница карточек */
+  --text: #1f2937; /* основной текст ( slate-800 ) */
+  --muted: #6b7280; /* второстепенный текст */
+
+  --primary: #2563eb; /* основной синий */
+  --primary-600: #2563eb;
+  --primary-500: #3b82f6;
+  --primary-700: #1d4ed8;
+
+  --accent: #06b6d4; /* бирюзовый для акцентов */
+  --success: #10b981; /* зелёный  */
+  --warning: #f59e0b; /* оранжевый */
+  --danger: #ef4444; /* красный */
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --radius: 8px;
+}
+
+/* Тёмная тема — переопределяем те же переменные */
+.dark {
+  --bg: #0b1020;
+  --card: #141a2b;
+  --card-border: #232a4a;
+  --text: #e5e7eb;
+  --muted: #93a0b8;
+
+  --primary: #60a5fa;
+  --accent: #22d3ee;
+  --success: #34d399;
+  --warning: #facc15;
+  --danger: #f87171;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Общие настройки страницы */
+html,
+body {
+  box-sizing: border-box;
+  height: 100%;
+}
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+body {
+  margin: 0;
+  font-family: Inter, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+  line-height: 1.5;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+/* Контейнер и отступы */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Заголовки */
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+h2 {
+  font-size: 20px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+h3 {
+  font-size: 16px;
+  margin: 12px 0;
+  color: var(--muted);
+}
+
+/* Карточки и панели аналитики */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.card-header {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.analytics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+.analytics .stat {
+  padding: 12px;
+  border-radius: var(--radius);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.85)
+  );
+  border: 1px solid var(--card-border);
+  text-align: left;
+}
+.analytics .stat .label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.analytics .stat .value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 6px;
+}
+@media (max-width: 900px) {
+  .analytics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .analytics {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Таблица товаров */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+thead {
+  background-color: #f3f4f6; /* можно заменить под тему, но держим светлый оттенок */
+}
+th,
+td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--card-border);
+  vertical-align: middle;
+  color: var(--text);
+}
+th {
+  font-weight: 600;
+  color: #374151;
+}
+tr:hover td {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+.btn {
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  background-color: var(--primary);
+  transition: background-color 0.2s ease;
+}
+.btn.secondary {
+  background-color: var(--muted);
+  color: #fff;
+} /* серый */
+.btn.danger {
+  background-color: var(--danger);
+}
+.btn.success {
+  background-color: var(--success);
+}
+.btn.info {
+  background-color: var(--primary);
+}
+.btn.small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* Форма добавления товара */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.form-row input,
+.form-row select {
+  padding: 8px 10px;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 6px;
+  background: #fff;
+  min-width: 140px;
+}
+.form-row button {
+  padding: 9px 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+}
+.form-row button.secondary {
+  background: #64748b;
+}
+.form-row .row-spacer {
+  flex: 1 1 100px;
+}
+
+/* Прогресс-бар (для заполненности) */
+.progress {
+  height: 12px;
+  background-color: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  background-color: var(--success);
+  width: 0%;
+}
+.progress.danger > span {
+  background-color: var(--danger);
+}
+.progress-bar {
+  background-color: var(--primary);
+  height: 12px;
+  border-radius: 6px;
+  width: 100%;
+}

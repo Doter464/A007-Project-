@@ -1,0 +1,74 @@
+<!doctype html>
+
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Кафе: учёт товаров</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <button id="toggle-theme" class="btn">Смена темы</button>
+
+    <div class="container">
+      <h1>Учет продуктов и расходников</h1>
+
+      <h3>Добавить товар</h3>
+      <div id="addForm" class="form-row">
+        <input id="name" placeholder="Название" />
+        <select id="category">
+          <option value="product">Продукт</option>
+          <option value="consumable">Расходник</option>
+        </select>
+        <input id="unit" placeholder="Единица измерения" />
+        <input id="price" type="number" placeholder="Цена" step="0.01" />
+        <input id="max" type="number" placeholder="Макс. кол-во" />
+        <input id="current" type="number" placeholder="Текущее кол-во" />
+        <button id="addBtn" class="btn">Добавить</button>
+      </div>
+
+      <h3>Список товаров</h3>
+      <table id="itemsTable">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Категория</th>
+            <th>Ед.</th>
+            <th>Цена</th>
+            <th>Макс</th>
+            <th>Кол-во</th>
+            <th>Прогресс</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <h3>История операций</h3>
+      <!-- Кнопка для очистки всей истории -->
+      <button
+        onclick="clearOperations()"
+        class="btn small btn-secondary"
+        style="margin: 8px 0"
+      >
+        Очистить историю
+      </button>
+
+      <table id="opsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Товар ID</th>
+            <th>Тип</th>
+            <th>Кол-во</th>
+            <th>Дата</th>
+            <!-- Действия по удалению отдельной операции -->
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
