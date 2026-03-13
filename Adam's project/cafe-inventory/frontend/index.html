@@ -1,74 +1,215 @@
 <!doctype html>
 
 <html lang="ru">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
-    <title>Кафе: учёт товаров</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>UMBRELLA CORP — Инвентарь</title>
+    <meta name="description" content="Система учёта товаров и инвентаря — Umbrella Corporation" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <button id="toggle-theme" class="btn">Смена темы</button>
+</head>
 
-    <div class="container">
-      <h1>Учет продуктов и расходников</h1>
+<body>
+    <div class="top-controls">
+        <button id="toggle-theme" class="btn"><i class="fa-solid fa-moon"></i> Тема</button>
+        <button id="logout-btn" class="btn btn-secondary" style="display: none;"><i
+                class="fa-solid fa-right-from-bracket"></i> Выход</button>
+        <button id="admin-btn" class="btn admin-only" style="display: none;"><i class="fa-solid fa-users-gear"></i>
+            Аккаунты</button>
+    </div>
 
-      <h3>Добавить товар</h3>
-      <div id="addForm" class="form-row">
-        <input id="name" placeholder="Название" />
-        <select id="category">
-          <option value="product">Продукт</option>
-          <option value="consumable">Расходник</option>
-        </select>
-        <input id="unit" placeholder="Единица измерения" />
-        <input id="price" type="number" placeholder="Цена" step="0.01" />
-        <input id="max" type="number" placeholder="Макс. кол-во" />
-        <input id="current" type="number" placeholder="Текущее кол-во" />
-        <button id="addBtn" class="btn">Добавить</button>
-      </div>
+    <!-- Экран авторизации -->
+    <div id="loginView" class="container login-container">
+        <i class="fa-solid fa-biohazard login-logo"></i>
+        <h2>Авторизация</h2>
+        <div class="form-row login-form">
+            <input id="login-username" type="text" placeholder="Имя пользователя" list="users-list"
+                autocomplete="username" />
+            <datalist id="users-list"></datalist>
+            <input id="login-pin" type="password" placeholder="PIN код (для админа не нужен)"
+                autocomplete="current-password" />
+            <button id="loginBtn" class="btn"><i class="fa-solid fa-unlock-keyhole"></i> Войти</button>
+        </div>
+        <p id="login-error" class="error-text"></p>
+    </div>
 
-      <h3>Список товаров</h3>
-      <table id="itemsTable">
-        <thead>
-          <tr>
-            <th>Название</th>
-            <th>Категория</th>
-            <th>Ед.</th>
-            <th>Цена</th>
-            <th>Макс</th>
-            <th>Кол-во</th>
-            <th>Прогресс</th>
-            <th>Действия</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    <!-- Основное приложение -->
+    <div id="appView" class="container" style="display: none;">
+        <h1>Учет продуктов и расходников</h1>
 
-      <h3>История операций</h3>
-      <!-- Кнопка для очистки всей истории -->
-      <button
-        onclick="clearOperations()"
-        class="btn small btn-secondary"
-        style="margin: 8px 0"
-      >
-        Очистить историю
-      </button>
+        <!-- Аналитика (кликабельные карточки) -->
+        <div class="analytics" id="analyticsPanel">
+            <div class="stat card stat-clickable" onclick="openDetail('total')">
+                <div class="label"><i class="fa-solid fa-coins" style="margin-right:4px;"></i> Общая стоимость</div>
+                <div class="value" id="stat-total">0 сом</div>
+                <div class="stat-detail" id="stat-total-detail"></div>
+                <div class="stat-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Подробнее</div>
+            </div>
+            <div class="stat card stat-clickable" onclick="openDetail('products')">
+                <div class="label"><i class="fa-solid fa-utensils" style="margin-right:4px;"></i> Продукты</div>
+                <div class="value" id="stat-products">0 сом</div>
+                <div class="stat-sub" id="stat-products-count"></div>
+                <div class="stat-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Подробнее</div>
+            </div>
+            <div class="stat card stat-clickable" onclick="openDetail('consumables')">
+                <div class="label"><i class="fa-solid fa-box" style="margin-right:4px;"></i> Расходники</div>
+                <div class="value" id="stat-consumables">0 сом</div>
+                <div class="stat-sub" id="stat-consumables-count"></div>
+                <div class="stat-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Подробнее</div>
+            </div>
+            <div class="stat card stat-clickable stat-warning" onclick="openDetail('lowstock')">
+                <div class="label"><i class="fa-solid fa-triangle-exclamation" style="margin-right:4px;"></i>
+                    Заканчиваются</div>
+                <div class="value" id="stat-low">0</div>
+                <div class="stat-low-list" id="stat-low-list"></div>
+                <div class="stat-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Подробнее</div>
+            </div>
+        </div>
 
-      <table id="opsTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Товар ID</th>
-            <th>Тип</th>
-            <th>Кол-во</th>
-            <th>Дата</th>
-            <!-- Действия по удалению отдельной операции -->
-            <th>Действия</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+        <!-- Модальное окно детализации аналитики -->
+        <div id="detailModal" class="modal">
+            <div class="modal-content detail-modal-content">
+                <div class="modal-header">
+                    <h2 id="detailModalTitle"><i id="detailModalIcon" class="fa-solid fa-chart-bar"></i> <span
+                            id="detailModalText">Детализация</span></h2>
+                    <span class="close-detail-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <!-- Сводка -->
+                    <div class="detail-summary" id="detailSummary"></div>
+                    <!-- Таблица -->
+                    <table id="detailTable">
+                        <thead id="detailTableHead"></thead>
+                        <tbody id="detailTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <h3>Добавить товар</h3>
+        <div id="addForm" class="form-row">
+            <input id="name" placeholder="Название" />
+            <select id="category">
+                <option value="product">Продукт</option>
+                <option value="consumable">Расходник</option>
+            </select>
+            <input id="unit" placeholder="Единица измерения" />
+            <input id="price" type="number" placeholder="Цена" step="0.01" />
+            <input id="max" type="number" placeholder="Макс. кол-во" />
+            <input id="current" type="number" placeholder="Текущее кол-во" />
+            <button id="addBtn" class="btn"><i class="fa-solid fa-plus"></i> Добавить</button>
+        </div>
+
+        <h3>Список товаров</h3>
+        <table id="itemsTable">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Категория</th>
+                    <th>Ед.</th>
+                    <th>Цена</th>
+                    <th>Макс</th>
+                    <th>Кол-во</th>
+                    <th>Прогресс</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="admin-only" id="history-section">
+            <h3>История операций</h3>
+            <!-- Кнопка для очистки всей истории -->
+            <button onclick="clearOperations()" class="btn small btn-secondary" style="margin: 8px 0">
+                <i class="fa-solid fa-trash-can"></i> Очистить историю
+            </button>
+
+            <table id="opsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Товар ID</th>
+                        <th>Тип</th>
+                        <th>Кол-во</th>
+                        <th>Пользователь</th>
+                        <th>Дата</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div> <!-- end history-section -->
+    </div>
+
+    <!-- Модальное окно управления аккаунтами -->
+    <div id="accountsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Управление пользователями</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-row add-user-form">
+                    <input type="hidden" id="edit-user-id" />
+                    <input id="new-username" placeholder="Имя пользователя" />
+                    <input id="new-pin" type="text" placeholder="PIN код" />
+                    <select id="new-role">
+                        <option value="user">Пользователь</option>
+                        <option value="admin">Администратор</option>
+                    </select>
+                    <button id="addUserBtn" class="btn"><i class="fa-solid fa-user-plus"></i> Создать</button>
+                    <button id="cancelEditBtn" class="btn btn-secondary" style="display: none;"><i
+                            class="fa-solid fa-ban"></i> Отмена</button>
+                </div>
+                <p id="user-error" class="error-text"></p>
+
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Роль</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно ввода количества (Внос / Списание) -->
+    <div id="qtyModal" class="modal">
+        <div class="modal-content qty-modal-content">
+            <div class="modal-header">
+                <h2 id="qtyModalTitle"><i id="qtyModalIcon" class="fa-solid fa-boxes-stacking"></i> <span
+                        id="qtyModalText">Операция</span></h2>
+                <span class="close-qty-modal">&times;</span>
+            </div>
+            <div class="modal-body" style="text-align:center;padding:20px 0;">
+                <p id="qtyModalDesc"
+                    style="color:var(--muted);margin-bottom:16px;font-family:'Share Tech Mono',monospace;"></p>
+                <input id="qtyInput" type="number" min="1" placeholder="Введите количество"
+                    style="width:100%;max-width:260px;padding:14px;font-size:18px;text-align:center;border:1px solid var(--input-border);border-radius:var(--radius);background:var(--input-bg);color:var(--text);font-family:'Share Tech Mono',monospace;outline:none;" />
+                <p id="qty-error" class="error-text" style="margin-top:10px;"></p>
+                <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+                    <button id="qtyConfirmBtn" class="btn"><i class="fa-solid fa-check"></i> Подтвердить</button>
+                    <button id="qtyCancelBtn" class="btn btn-secondary"><i class="fa-solid fa-xmark"></i>
+                        Отмена</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="main.js"></script>
-  </body>
+</body>
+
 </html>
